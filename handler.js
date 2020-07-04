@@ -1,9 +1,5 @@
-'use strict';
+import pg from 'pg';
 
-const pg = require('pg');
-
-// Heroku PG credentials hard-coded for easy development.
-// INSECURE - CHANGE FOR PROD
 const pgConfig = {
   max: 1,
   host: process.env.DATABASE_HOST,

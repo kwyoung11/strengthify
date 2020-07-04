@@ -19,5 +19,9 @@
     "serverless-offline": "^5.3.3",
     "typescript": "^3.9.6"
   },
-  "dependencies": {}
+  "dependencies": {
+    "knex": "^0.21.1",
+    "objection": "^2.2.0",
+    "pg": "^8.2.1"
+  }
 }
