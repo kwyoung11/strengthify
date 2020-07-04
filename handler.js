@@ -1,18 +1,30 @@
 import pg from 'pg';
 
-const pgConfig = {
-  max: 1,
-  host: process.env.DATABASE_HOST,
-  user: process.env.DATABASE_USER,
-  password: process.env.DATABASE_PWD,
-  database: process.env.DATABASE_DB,
-  ssl: true,
-};
+const axios = require('axios');
+const parsePgConnStr = require('pg-connection-string').parse;
+
+const herokuApiKey = process.env.HEROKU_API_KEY;
+const herokuPostgresId = process.env.HEROKU_POSTGRES_ID;
+
+const herokuApi = axios.create({
+  baseURL: 'https://api.heroku.com/',
+  headers: {
+    'Authorization': `Bearer ${herokuApiKey}`,
+    'Accept': 'application/vnd.heroku+json; version=3',
+  },
+});
 
 // Pool will be reused for each invocation of the backing container.
 let pgPool;
 
-const setupPgPool = () => {
+const setupPgPool = async () => {
+  const herokuRes = await herokuApi.get(`addons/${herokuPostgresId}/config`);
+  const pgConnStr = herokuRes.data[0].value;
+  const pgConfig = {
+    ...parsePgConnStr(pgConnStr),
+    max: 1,
+    ssl: { rejectUnauthorized: false },
+  };
   pgPool = new pg.Pool(pgConfig);
 };
 
