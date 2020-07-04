@@ -1,0 +1,35 @@
+# NOTE: update this with your service name
+service: strengthify-api
+
+# Create an optimized package for our functions 
+package:
+  individually: true
+
+plugins:
+  - serverless-bundle # Package our functions with Webpack
+  - serverless-offline
+  - serverless-dotenv-plugin # Load .env as environment variables
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: prod
+  region: us-east-1
+  # To load environment variables externally
+  # rename .env to .env and uncomment
+  # the following line. Also, make sure to not
+  # commit your .env.
+  #
+  environment:
+    DATABASE_HOST: ${env:DATABASE_HOST}
+    DATABASE_USER: ${env:DATABASE_USER}
+    DATABASE_PWD: ${env:DATABASE_PWD}
+    DATABASE_DB: ${env:DATABASE_DB}
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: hello
+          method: get
